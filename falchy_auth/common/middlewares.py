@@ -1,6 +1,6 @@
 
 
-from falchemy_rest import middlewares
+from falchy.core import middlewares
 
 from ..tenants.models import Tenant
 from ..sites.models import Site

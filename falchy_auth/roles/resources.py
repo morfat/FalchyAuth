@@ -7,7 +7,7 @@ from ..permissions.serializers import PermissionSerializer
 from ..permissions.models import Permission
 from ..content_types.models import ContentType
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource,CreateResource, ListResource, UpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource,CreateResource, ListResource, UpdateResource
 
 from sqlalchemy import select
 

@@ -1,6 +1,6 @@
 
 
-from falchemy_rest.models import Base,HasTenantMixin ,utc_pk
+from falchy.db.models import Base,HasTenantMixin ,utc_pk
 
 from sqlalchemy import Column, String, Boolean, ForeignKey, Integer
 

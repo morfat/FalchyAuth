@@ -4,7 +4,7 @@ import falcon
 from .models import ContentType
 from .serializers import ContentTypeSerializer
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource
 
 
 class ListCreateContentTypes(ListCreateResource):

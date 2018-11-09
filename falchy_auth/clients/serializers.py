@@ -1,7 +1,7 @@
 
 import json
 import serpy
-from falchemy_rest.serializers import BaseSerializer
+from falchy.core.serializers import BaseSerializer
 from jwcrypto import jwk
 
 class ClientSerializer(BaseSerializer):

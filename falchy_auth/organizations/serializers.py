@@ -1,7 +1,7 @@
 
 
 import serpy
-from falchemy_rest.serializers import BaseSerializer
+from falchy.core.serializers import BaseSerializer
 
 class OrganizationSerializer(BaseSerializer):
     name = serpy.StrField()

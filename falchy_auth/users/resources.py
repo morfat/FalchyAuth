@@ -15,7 +15,7 @@ from .serializers import UserSerializer , LoginUserSerializer, UserRegisterSeria
 from . import serializers
 
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource,CreateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource,CreateResource
 
 
 

@@ -4,7 +4,7 @@ import falcon
 from .models import EmailProvider,EmailTemplate
 from .serializers import EmailProviderSerializer,EmailTemplateSerializer
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource
 
 class ListCreateEmailProviders(ListCreateResource):
 

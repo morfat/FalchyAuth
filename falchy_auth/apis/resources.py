@@ -4,7 +4,7 @@ import falcon
 from .models import API
 from .serializers import APISerializer
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource
 
 class ListCreateAPIs(ListCreateResource):
 

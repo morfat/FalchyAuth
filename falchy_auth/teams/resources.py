@@ -7,7 +7,7 @@ from  ..roles.models import Role
 from ..users.models import User
 from .serializers import * 
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource, CreateResource, ListResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource, CreateResource, ListResource
 from sqlalchemy import select
 
 

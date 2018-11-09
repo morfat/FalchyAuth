@@ -1,7 +1,7 @@
 import falcon
 
 
-from falchemy_rest import middlewares , media_handlers
+from falchy.core import middlewares , media_handlers
 from .common.middlewares import CustomAuthMiddleWare
 
 from .settings import DB_ENGINE #, OAUTH_SECRET_KEY

@@ -1,5 +1,5 @@
 
-from falchemy_rest.urls import urlpatterns
+from falchy.core.urls import urlpatterns
 from .settings import PROJECT_NAME 
 
 

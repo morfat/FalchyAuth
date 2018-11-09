@@ -1,7 +1,7 @@
 
 
 import serpy
-from falchemy_rest.serializers import BaseSerializer , DictField
+from falchy.core.serializers import BaseSerializer , DictField
 
 
 

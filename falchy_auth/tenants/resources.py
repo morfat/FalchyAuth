@@ -4,7 +4,7 @@ import falcon
 from .models import Tenant
 from .serializers import *
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource
 
 
 

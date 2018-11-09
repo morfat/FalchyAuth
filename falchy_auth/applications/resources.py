@@ -5,7 +5,7 @@ from .models import Application
 from .serializers import ApplicationSerializer
 
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource
 
 class ListCreateApplications(ListCreateResource):
 

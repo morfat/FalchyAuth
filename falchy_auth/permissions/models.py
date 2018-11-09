@@ -1,5 +1,5 @@
 
-from falchemy_rest.models import Base
+from falchy.db.models import Base
 
 from sqlalchemy import Column, String, ForeignKey , UniqueConstraint
 

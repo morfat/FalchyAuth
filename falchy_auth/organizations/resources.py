@@ -4,7 +4,7 @@ import falcon
 from .models import Organization
 from .serializers import OrganizationSerializer
 
-from falchemy_rest.resources import ListCreateResource ,RetrieveUpdateResource , ListResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource , ListResource
 
 class ListCreateOrganizations(ListResource):
 
