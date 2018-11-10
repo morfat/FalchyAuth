@@ -35,6 +35,7 @@ class ListCreateEmailTemplates(ListCreateResource):
     serializer_class = EmailTemplateSerializer
 
 
+
 class RetrieveUpdateEmailTemplate(RetrieveUpdateResource):
  
     model = EmailTemplate

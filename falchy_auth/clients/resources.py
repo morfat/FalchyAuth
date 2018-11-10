@@ -2,9 +2,9 @@
 import falcon
 
 from .models import Client
-from .serializers import ClientSerializer
+from .serializers import ClientSerializer, GenerateClientSecretSerializer
 
-from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource
+from falchy.core.resources import ListCreateResource ,RetrieveUpdateResource, CreateResource
 
 class ClientMixin:
 
@@ -17,6 +17,26 @@ class ClientMixin:
             raise falcon.HTTPBadRequest(title="Invalid Client", description="Valid client_id is needed")
         
         return client
+
+
+class GenerateClientSecret(CreateResource):
+    model = Client
+    serializer_class = GenerateClientSecretSerializer
+
+    def create(self,req,resp,db,posted_data, **kwargs):
+        # print ( posted_data )
+        pk = posted_data.get("id")
+        data = {"client_secret": posted_data.get("client_secret") }
+        qset = db.objects( self.model.update() ).filter( id__eq=pk )
+
+        if self.multitenant:
+            qset = qset.filter( tenant_id__eq=self.get_auth_tenant_id(req) )
+        
+        #save
+        qset.update(**data)
+
+        return self.get_object(req,db,pk)
+
 
 
 

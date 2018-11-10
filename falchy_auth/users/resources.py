@@ -458,10 +458,14 @@ class UserResetPassword(CreateResource,ClientMixin, AuthMixin):
         posted_data = req.media
         serializer = self.get_serializer_class()(posted_data)
         posted_data = serializer.valid_write_data
-
         host_name = posted_data.pop("host_name")
 
-        tenant = self.get_tenant(db,host_name)
+        site = self.get_site(db,host_name)
+    
+        tenant_id = site.get("tenant_id")
+
+        tenant = self.get_tenant(db,tenant_id)
+        
         tenant_id = tenant.get("id")
         application = self.get_appication(db,application_id=tenant.get("application_id") )
         auth_username_field = application.get("auth_username_field")

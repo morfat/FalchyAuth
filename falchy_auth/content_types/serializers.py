@@ -7,4 +7,5 @@ class ContentTypeSerializer(BaseSerializer):
     code_name = serpy.StrField()
     display_name = serpy.StrField()
     application_id = serpy.StrField(required=False)
+    is_confidential = serpy.BoolField()
    

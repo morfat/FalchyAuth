@@ -14,19 +14,19 @@ class CustomAuthMiddleWare(middlewares.AuthMiddleWare):
         pass
 
     def get_secret_key(self,req):
-        host_name = req.forwarded_host
+        host_name = req.get_header('Origin')  #req.forwarded_host
         db =  self.get_db(req)
 
         site = self.get_site(db, host_name)
 
         if not site:
-            raise falcon.HTTPForbidden(description=" Requests from this site not configured. ")
+            raise falcon.HTTPForbidden(description=" Requests from: {origin} not configured.".format( origin = host_name ) )
 
         tenant = self.get_authenticated_tenant(db, site.get("tenant_id") )
         application = self.get_authenticated_app(db, tenant.get("application_id") )
 
         #add the tenant and application to context
-        req.context["authenticated_app"] = application
+        req.context["authenticated_application"] = application
         req.context["authenticated_tenant"] = tenant
         return application.get("signing_secret")
     
@@ -40,18 +40,5 @@ class CustomAuthMiddleWare(middlewares.AuthMiddleWare):
         return db.objects( Application.get(application_id ) ).fetch_one()
 
 
-"""
-class TenantResourceValidationMiddleWare:
-    
-    Called after 'CustomAuthMiddleWare '
-
-    1. To validate that resource tenant is correct as required
-    2. For SUPER tenants, check if they have enough access to the other Tenants (for super tenant paths)
-    3. To set the correct resource tenant
-    
-
-    pass
-
-"""
 
 
