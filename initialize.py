@@ -42,6 +42,7 @@ def init_app(db, app_name):
     tenant_business_mode = input("Business Mode ? ( B2B, B2C): ")
     username = input("Enter Superuser %s: "%(auth_username_field))
     password = input("Enter Superuser Password: ")
+    admin_portal_url = input("Enter Admin Portal Url: ")
     api_name = "Default API {random_time}".format( random_time = str(time.time()).split('.')[0] )
     tenant_name =  "Default Tenant {random_time}".format( random_time = str(time.time()).split('.')[0] )
     app_name =  "Default APP {random_time}".format( random_time = str(time.time()).split('.')[0] )
@@ -67,7 +68,7 @@ def init_app(db, app_name):
                                             })
 
     #create default site with default domain name
-    created_site = db.objects( Site.insert() ).create(**{ "tenant_id": tenant_id, "host_name":"admin.localhost" })
+    created_site = db.objects( Site.insert() ).create(**{ "tenant_id": tenant_id, "host_name": admin_portal_url })
 
     #create user
     user_d = { "password": password , "is_staff": True, "is_super_user": True,
