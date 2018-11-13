@@ -27,6 +27,7 @@ def init_db():
 
 
 def init_app(db, app_name):
+    import time
     from falchy_auth.applications.models import Application
     from falchy_auth.tenants.models import Tenant
     from falchy_auth.sites.models import Site
@@ -41,6 +42,10 @@ def init_app(db, app_name):
     tenant_business_mode = input("Business Mode ? ( B2B, B2C): ")
     username = input("Enter Superuser %s: "%(auth_username_field))
     password = input("Enter Superuser Password: ")
+    api_name = "Default API {random_time}".format( random_time = str(time.time()).split('.')[0] )
+    tenant_name =  "Default Tenant {random_time}".format( random_time = str(time.time()).split('.')[0] )
+    app_name =  "Default APP {random_time}".format( random_time = str(time.time()).split('.')[0] )
+    organization_name = "Default Organization {random_time}".format( random_time = str(time.time()).split('.')[0] )
 
     api_uri = input("Default Resource Server URL: ")
     is_multitenant = True if is_multitenant_q == 'y' else False
@@ -50,19 +55,19 @@ def init_app(db, app_name):
 
     #create super tenant
     application_id = created_app.get("id")
-    created_tenant = db.objects( Tenant.insert() ).create(**{"is_super_tenant": True,"name":"Default","business_mode": tenant_business_mode,
+    created_tenant = db.objects( Tenant.insert() ).create(**{"is_super_tenant": True,"name":tenant_name,"business_mode": tenant_business_mode,
                                             "application_id": application_id
                                             })
    
     
     #create default api
     tenant_id = created_tenant.get("id")
-    created_api = db.objects( API.insert() ).create(**{"is_default": True,"name":"Default","description": "Default Generated",
+    created_api = db.objects( API.insert() ).create(**{"is_default": True,"name":api_name,"description": "Default Generated",
                                             "uri": api_uri,"tenant_id": tenant_id
                                             })
 
     #create default site with default domain name
-    created_site = db.objects( Site.insert() ).create(**{ "tenant_id": tenant_id, "domain_name":"admin.localhost" })
+    created_site = db.objects( Site.insert() ).create(**{ "tenant_id": tenant_id, "host_name":"admin.localhost" })
 
     #create user
     user_d = { "password": password , "is_staff": True, "is_super_user": True,
@@ -76,7 +81,7 @@ def init_app(db, app_name):
 
     #create organization
     if tenant_business_mode == 'B2B':
-        created_organization = db.objects( Organization.insert() ).create(**{"name":"Default","tenant_id": tenant_id })
+        created_organization = db.objects( Organization.insert() ).create(**{"name": organization_name,"tenant_id": tenant_id })
         db.objects( OrganizationUser.insert() ).create(**{"is_admin":True,"user_id": user_id, "organization_id": created_organization.get("id") })
 
 

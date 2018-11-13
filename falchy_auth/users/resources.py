@@ -43,6 +43,16 @@ class AuthMixin:
     
     def get_appication(self, db, application_id):
         return db.objects( Application.all() ).filter( id__eq=application_id).fetch_one()
+    
+    def get_username_field(self, tenant, application):
+        #prefer username field from tenant if provided
+        auth_username_field = tenant.get("auth_username_field")
+        if not auth_username_field:
+            auth_username_field = application.get("auth_username_field")
+        
+        return auth_username_field
+
+
 
 class ListCreateUsers(ListCreateResource):
     """ 
@@ -153,7 +163,7 @@ class RegisterUser(CreateResource, ClientMixin, AuthMixin):
 
         #client_id = posted_data.pop("client_id",None)
         #client = self.get_client(db,client_id)
-        host_name = posted_data.pop("host_name")
+        host_name = req.get_header("Origin") #posted_data.pop("host_name")
         agree = posted_data.pop("agree", None)
         site = self.get_site(db,host_name)
     
@@ -162,7 +172,7 @@ class RegisterUser(CreateResource, ClientMixin, AuthMixin):
         tenant = self.get_tenant(db,tenant_id)
        
         application = self.get_appication(db,application_id=tenant.get("application_id") )
-        auth_username_field = application.get("auth_username_field")
+        auth_username_field = self.get_username_field( tenant, application) #application.get("auth_username_field")
 
         email = posted_data.get("email")
         user_password =  posted_data.get("password")
@@ -254,7 +264,8 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
         data = serializer.valid_write_data
 
         #get client
-        host_name = posted_data.get("host_name")
+        host_name = req.get_header("Origin") #posted_data.get("host_name")
+
         site = self.get_site(db,host_name)
     
         tenant_id = site.get("tenant_id")
@@ -270,7 +281,7 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
             raise falcon.HTTPBadRequest(description="Default Resource Server on every Tenant is needed")
 
         #get user
-        auth_username_field = application.get("auth_username_field")
+        auth_username_field =  self.get_username_field( tenant, application) #application.get("auth_username_field")
         email = data.get("email")
         phone_number = data.get("phone_number")
         password = data.get("password")
@@ -310,8 +321,13 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
        
         user_id = user.get("id")
 
-        user_profile = {  "organization_id":None, "is_organization_admin":None, "is_staff":user.get("is_staff"),
-                          "is_super_user":user.get("is_super_user"), "first_name":user.get("first_name"), 
+        user_profile = {  #"tenant_id": tenant_id, 
+                          #"tenant_name": tenant.get("name"),
+                          #"application_id": application_id, 
+                          "organization_id":None, "is_organization_admin":None,
+                          "is_staff":user.get("is_staff"),
+                          "is_super_user":user.get("is_super_user"), 
+                          "first_name":user.get("first_name"), 
                           "last_name": user.get("last_name") 
                         }
         
@@ -334,8 +350,11 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
         user_organization = None
         try:
             user_organization = db.objects( OrganizationUser.user_organization(user_id) ).fetch()[0]
-            user_profile.update({"organization_id": user_organization.get("organization_id"), "is_organization_admin": user_organization.get("is_admin")})
-            access_token_claims.update({"user_organization_id": user_organization.get("organization_id"), "user_is_organization_admin": user_organization.get("is_admin")})
+            user_profile.update({  "organization_id": user_organization.get("organization_id"), 
+                                   "is_organization_admin": user_organization.get("is_admin")
+                                  })
+            access_token_claims.update({"organization_id": user_organization.get("organization_id"),
+                                        "is_organization_admin": user_organization.get("is_admin")})
         except IndexError:
             pass
 
@@ -362,7 +381,8 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
         resp.media = {"access_token": self.generate_encrypted_token(key = self.get_signing_secret(key = secret_key ), claims = access_token_claims),
                       "token_type": "Bearer", 
                       "expires_in": token_lifetime , 
-                      "user_profile":user_profile
+                      "user_profile": user_profile,
+                      "app_tenant": tenant 
                       }
 
 
@@ -458,17 +478,17 @@ class UserResetPassword(CreateResource,ClientMixin, AuthMixin):
         posted_data = req.media
         serializer = self.get_serializer_class()(posted_data)
         posted_data = serializer.valid_write_data
-        host_name = posted_data.pop("host_name")
+        host_name = req.get_header("Origin") # posted_data.pop("host_name")
 
         site = self.get_site(db,host_name)
     
         tenant_id = site.get("tenant_id")
 
         tenant = self.get_tenant(db,tenant_id)
-        
+
         tenant_id = tenant.get("id")
         application = self.get_appication(db,application_id=tenant.get("application_id") )
-        auth_username_field = application.get("auth_username_field")
+        auth_username_field =  self.get_username_field( tenant, application) #application.get("auth_username_field")
 
         
         #client_id = posted_data.pop("client_id")

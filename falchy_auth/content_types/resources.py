@@ -16,6 +16,12 @@ class ListCreateContentTypes(ListCreateResource):
 
     serializer_class = ContentTypeSerializer
 
+    def get_queryset(self,req,**kwargs):
+        application_id = self.get_authenticated_application(req).get("id")
+
+        return self.model.all().where( self.model.application_id == application_id )
+
+
     def perform_create(self,req,db,posted_data):
 
         application = self.get_authenticated_application(req)
@@ -32,6 +38,11 @@ class RetrieveUpdateContentType(RetrieveUpdateResource):
     model = ContentType
 
     serializer_class = ContentTypeSerializer
+
+    def get_queryset(self,req,**kwargs):
+        application_id = self.get_authenticated_application(req).get("id")
+
+        return self.model.all().where( self.model.application_id == application_id )
 
 
 
