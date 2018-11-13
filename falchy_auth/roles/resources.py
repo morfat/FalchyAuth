@@ -53,6 +53,7 @@ class ListRolePermissions(ListResource, UpdateResource):
                 db.objects( self.model.insert() ).create(**data)
 
         resp.status =  falcon.HTTP_OK
+        resp.media = {"message": "Updated Role Permissions"}
 
 
     def on_get(self,req, resp, pk):
@@ -74,7 +75,7 @@ class ListRolePermissions(ListResource, UpdateResource):
                 RolePermission, RolePermission.permission_id == Permission.id )
              ).where( RolePermission.role_id == role_id)
     
-    def get_permissions_queryset(self):
+    def get_permissions_queryset(self, application_id):
         #all
         return select( [ ContentType.display_name.label('content_type_display_name'),
                          ContentType.code_name.label('content_type_code_name'),
@@ -83,14 +84,15 @@ class ListRolePermissions(ListResource, UpdateResource):
                         ] 
             ).select_from( Permission.__table__.join(
                 ContentType, ContentType.id == Permission.content_type_id )
-            ) #.where( RolePermission.role_id == role_id)
+            ).where( ContentType.application_id == application_id)
 
 
 
 
     def list(self,req,resp,db, role_id):
+        application_id = self.get_authenticated_application(req).get("id")
         role_permissions = db.objects( self.get_queryset(role_id) ).fetch()
-        permissions = db.objects( self.get_permissions_queryset() ).fetch()
+        permissions = db.objects( self.get_permissions_queryset(application_id) ).fetch()
 
         #make permissions
         role_permissions_ids = [ p.get("id") for p in role_permissions ]
