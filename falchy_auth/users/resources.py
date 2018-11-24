@@ -265,7 +265,7 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
 
         #get client
         host_name = req.get_header("Origin") #posted_data.get("host_name")
-
+      
         site = self.get_site(db,host_name)
     
         tenant_id = site.get("tenant_id")
@@ -296,7 +296,7 @@ class LoginUser(CreateResource,ClientMixin, AuthMixin):
             user = user_queryset.filter( email__eq = email ).fetch_one()
 
             #check if password is valid
-            if not User.is_valid_password(user.get("password"), password):
+            if not user or not User.is_valid_password(user.get("password"), password):
                 raise falcon.HTTPBadRequest(title="Login Failed",description="Valid Email and Password is needed")
                 
 
